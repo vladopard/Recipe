@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.OffsetDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "users")
@@ -32,4 +34,24 @@ public class User {
     @Column(nullable = false)
     private OffsetDateTime createdAt;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Recipe> recipes = new ArrayList<>();
+
+    //helperi
+    public void addRecipe(Recipe recipe){
+        if(recipe == null) return;
+        if(!recipes.contains(recipe)) recipes.add(recipe);
+        if(recipe.getUser() != this) recipe.setUser(this);
+    }
+
+    public void removeRecipe(Recipe recipe){
+        if(recipe == null) return;
+        recipes.remove(recipe);
+        if(recipe.getUser() == this) recipe.setUser(null);
+    }
+
+
 }
+
+
+
